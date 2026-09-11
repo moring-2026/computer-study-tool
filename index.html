@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>石家庄中考 · 信息技术 (初二真题)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- JSZip 库：用于浏览器端真实压缩 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    /* ==================== 主题变量 ==================== */
+    :root {
+      --bg-body: #0f172a;
+      --bg-container: #1e293b;
+      --bg-card: #0f172a;
+      --bg-input: #1e293b;
+      --bg-question: #1e293b;
+      --bg-preview: #1e293b;
+      --bg-modal: #1e293b;
+      --bg-home-btn: #0f172a;
+      --bg-home-btn-active: #1e3a5f;
+      --bg-teacher: #1e1b13;
+      --bg-editor-box: #292524;
+      --bg-msg: #1e293b;
+      --bg-code: #0a0e17;
+      --bg-code-input: #000000;
+
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-inverse: #0f172a;
+
+      --border-main: #334155;
+      --border-input: #334155;
+
+      --accent-blue: #60a5fa;
+      --accent-blue-bg: #1e3a5f;
+      --accent-green: #22c55e;
+      --accent-green-bg: #052e16;
+      --accent-red: #ef4444;
+      --accent-red-bg: #450a0a;
+      --accent-yellow: #f59e0b;
+      --accent-yellow-bg: #451a03;
+      --accent-purple: #7c3aed;
+
+      --shadow-container: 0 25px 50px rgba(0, 0, 0, 0.5);
+      --shadow-btn: 0 6px 12px rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+      --code-text: #7dd3fc;
+      --preview-bg: #f8fafc;
+      --preview-text: #1e293b;
+    }
+
+    body.light-theme {
+      --bg-body: #eef2f7;
+      --bg-container: #ffffff;
+      --bg-card: #f9fcff;
+      --bg-input: #ffffff;
+      --bg-question: #ffffff;
+      --bg-preview: #ffffff;
+      --bg-modal: #ffffff;
+      --bg-home-btn: #f9fcff;
+      --bg-home-btn-active: #e5eff9;
+      --bg-teacher: #fff8e7;
+      --bg-editor-box: #ffffff;
+      --bg-msg: #eef5fb;
+      --bg-code: #1e1e2e;
+      --bg-code-input: #181825;
+
+      --text-primary: #0b2b4a;
+      --text-secondary: #1f3f62;
+      --text-muted: #6b7f99;
+      --text-inverse: #ffffff;
+
+      --border-main: #e6edf6;
+      --border-input: #d4e0ed;
+
+      --accent-blue: #1a4b8c;
+      --accent-blue-bg: #e5eff9;
+      --accent-green: #1f8b4c;
+      --accent-green-bg: #ebf7f0;
+      --accent-red: #b13e3e;
+      --accent-red-bg: #fef6f6;
+      --accent-yellow: #e6a017;
+      --accent-yellow-bg: #fff8e7;
+      --accent-purple: #8a6d3b;
+
+      --shadow-container: 0 25px 50px rgba(0, 20, 40, 0.20);
+      --shadow-btn: 0 6px 12px rgba(26, 75, 140, 0.15);
+      --shadow-sm: 0 4px 10px rgba(26, 75, 140, 0.15);
+
+      --code-text: #cdd6f4;
+      --preview-bg: #fafdff;
+      --preview-text: #1e293b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background: var(--bg-body);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px 16px;
+      color: var(--text-primary);
+      transition: background 0.3s, color 0.3s;
+    }
+    .app-wrapper { max-width: 1300px; width: 100%; }
+    .exam-container {
+      background: var(--bg-container);
+      border-radius: 44px;
+      box-shadow: var(--shadow-container);
+      padding: 28px 30px 36px;
+      border: 1px solid var(--border-main);
+      transition: background 0.3s, border 0.3s;
+    }
+    .exam-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      border-bottom: 2px solid var(--border-main);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      gap: 12px;
+    }
+    .exam-title { display: flex; align-items: center; gap: 14px; }
+    .exam-title i {
+      font-size: 2.2rem; color: var(--accent-blue); background: var(--accent-blue-bg);
+      padding: 12px; border-radius: 24px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .exam-title h1 { font-size: 2rem; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px; }
+    .exam-title span {
+      font-weight: 300; color: var(--text-muted); background: var(--accent-blue-bg);
+      padding: 4px 16px; border-radius: 40px; font-size: 0.9rem; margin-left: 6px;
+    }
+    .exam-badge-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .exam-badge {
+      background: var(--accent-blue-bg); color: var(--accent-blue); padding: 8px 24px;
+      border-radius: 60px; font-weight: 500; font-size: 0.9rem;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-main);
+    }
+    .theme-toggle-btn {
+      background: var(--accent-blue-bg); color: var(--accent-blue);
+      border: 1px solid var(--border-main); border-radius: 60px;
+      padding: 8px 18px; font-weight: 500; font-size: 0.9rem;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .theme-toggle-btn:hover { transform: scale(0.96); opacity: 0.85; }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px; margin: 18px 0 28px;
+    }
+    .home-btn {
+      background: var(--bg-home-btn); border: 1.5px solid var(--border-main);
+      border-radius: 32px; padding: 16px 8px; text-align: center;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .home-btn i {
+      font-size: 1.8rem; color: var(--accent-blue); background: var(--accent-blue-bg);
+      padding: 12px; border-radius: 30px;
+      width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;
+    }
+    .home-btn span { font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; }
+    .home-btn:hover { transform: translateY(-4px); border-color: var(--accent-blue); box-shadow: 0 12px 24px rgba(96,165,250,0.15); }
+    .home-btn.active-module { border-color: var(--accent-blue); background: var(--bg-home-btn-active); box-shadow: 0 0 0 3px rgba(96,165,250,0.2); }
+    .home-btn.active-module i { background: var(--accent-blue); color: var(--text-inverse); }
+
+    .module-container {
+      background: var(--bg-card); border-radius: 32px; padding: 22px 26px 28px;
+      border: 1px solid var(--border-main); min-height: 280px;
+      transition: all 0.15s; margin-top: 4px;
+    }
+    .module-title {
+      font-size: 1.4rem; font-weight: 600; color: var(--text-primary);
+      display: flex; align-items: center; gap: 14px;
+      border-bottom: 2px solid var(--border-main); padding-bottom: 14px; margin-bottom: 20px;
+    }
+    .module-title i { color: var(--accent-blue); font-size: 1.8rem; }
+    .module-content { display: flex; flex-direction: column; gap: 16px; }
+    .hidden-module { display: none; }
+
+    .row-field { display: flex; flex-direction: column; gap: 6px; }
+    .row-field label { font-weight: 500; color: var(--text-secondary); font-size: 0.95rem; }
+    .row-field input, .row-field textarea, .row-field select {
+      padding: 12px 18px; border: 1.5px solid var(--border-input);
+      border-radius: 30px; font-size: 1rem; background: var(--bg-input);
+      color: var(--text-primary); outline: none; transition: 0.2s; width: 100%;
+    }
+    .row-field textarea { border-radius: 24px; min-height: 70px; resize: vertical; font-family: inherit; }
+    .row-field input:focus, .row-field textarea:focus, .row-field select:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(96,165,250,0.15); }
+
+    .btn-primary { background: var(--accent-blue); border: none; color: white; font-weight: 600; padding: 14px 24px; border-radius: 60px; font-size: 1rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-btn); width: auto; min-width: 140px; }
+    .btn-primary:hover { opacity: 0.9; transform: scale(0.98); }
+    .btn-success { background: var(--accent-green); border: none; color: white; font-weight: 600; padding: 14px 24px; border-radius: 60px; font-size: 1rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-btn); }
+    .btn-success:hover { opacity: 0.9; transform: scale(0.98); }
+    .btn-danger { background: var(--accent-red); border: none; color: white; font-weight: 600; padding: 14px 24px; border-radius: 60px; font-size: 1rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-btn); }
+    .btn-danger:hover { opacity: 0.9; transform: scale(0.98); }
+    .btn-warn { background: var(--accent-yellow); border: none; color: white; font-weight: 600; padding: 12px 20px; border-radius: 60px; font-size: 0.95rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
+    .btn-warn:hover { opacity: 0.9; transform: scale(0.98); }
+    .btn-sm { padding: 8px 16px; min-width: 80px; font-size: 0.85rem; }
+    .btn-teacher { background: var(--accent-purple); border: none; color: white; font-weight: 600; padding: 12px 22px; border-radius: 60px; font-size: 0.95rem; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
+    .btn-teacher:hover { opacity: 0.9; transform: scale(0.98); }
+
+    .msg-box { padding: 12px 18px; border-radius: 40px; font-size: 0.95rem; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--accent-blue); background: var(--bg-msg); margin-top: 8px; color: var(--text-secondary); transition: background 0.3s; }
+    .flex-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .text-muted { color: var(--text-muted); font-size: 0.85rem; }
+
+    .question-item { background: var(--bg-question); border-radius: 20px; padding: 14px 18px; border: 1px solid var(--border-main); margin-bottom: 12px; transition: background 0.3s; }
+    .question-item .q-text { font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+    .options { display: flex; flex-wrap: wrap; gap: 18px 30px; padding: 4px 0; }
+    .options label { display: flex; align-items: center; gap: 8px; font-weight: 450; color: var(--text-secondary); cursor: pointer; }
+    .options input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent-blue); cursor: pointer; }
+    .judge-group { display: flex; gap: 28px; flex-wrap: wrap; padding: 4px 0; }
+    .judge-group label { display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; color: var(--text-secondary); }
+    .judge-group input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent-blue); cursor: pointer; }
+
+    .html-editor-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
+    @media (max-width: 800px) { .html-editor-wrap { grid-template-columns: 1fr; } }
+    .html-editor-box {
+      background: var(--bg-code); border-radius: 20px; padding: 16px;
+      color: var(--code-text); font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.85rem; border: 1px solid var(--border-main);
+    }
+    .html-editor-box textarea {
+      width: 100%; min-height: 240px; background: var(--bg-code-input); color: var(--code-text);
+      border: 1px solid var(--border-main); border-radius: 12px; padding: 12px;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: 0.82rem;
+      outline: none; resize: vertical; line-height: 1.6;
+    }
+    .html-editor-box textarea:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(96,165,250,0.2); }
+    .html-preview-box {
+      background: var(--bg-preview); border-radius: 20px; padding: 16px;
+      border: 1px solid var(--border-main); min-height: 240px; overflow: auto;
+    }
+    .html-preview-box .preview-header { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .html-preview-box #htmlPreview { padding: 8px; border: 1px dashed var(--border-main); border-radius: 12px; min-height: 180px; background: var(--preview-bg); color: var(--preview-text); }
+
+    .html-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .tool-btn {
+      background: var(--accent-blue-bg); border: 1px solid var(--border-main); color: var(--accent-blue);
+      padding: 6px 14px; border-radius: 30px; font-size: 0.8rem;
+      cursor: pointer; font-weight: 500; transition: 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .tool-btn:hover { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+
+    /* ========== 真实压缩操作界面 ========== */
+    .upload-zone {
+      border: 3px dashed var(--border-main);
+      border-radius: 24px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-question);
+    }
+    .upload-zone:hover {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-bg);
+    }
+    .upload-zone.dragover {
+      border-color: var(--accent-green);
+      background: var(--accent-green-bg);
+      transform: scale(1.01);
+    }
+    .upload-zone i {
+      font-size: 3rem;
+      color: var(--accent-blue);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .upload-zone .upload-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .upload-zone .upload-hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .upload-zone input[type="file"] { display: none; }
+
+    .file-list-box {
+      margin-top: 16px;
+      background: var(--bg-question);
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid var(--border-main);
+    }
+    .file-list-box .file-list-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .file-list-box .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg-input);
+      border-radius: 12px;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .file-list-box .file-item .file-icon { color: var(--accent-yellow); }
+    .file-list-box .file-item .file-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-list-box .file-item .file-size { color: var(--text-muted); font-size: 0.78rem; }
+    .file-list-box .file-item .remove-btn {
+      background: none; border: none; color: var(--accent-red);
+      cursor: pointer; padding: 4px 8px; border-radius: 8px;
+      transition: 0.15s;
+    }
+    .file-list-box .file-item .remove-btn:hover { background: var(--accent-red-bg); }
+
+    .rar-progress-large {
+      margin-top: 16px;
+      height: 28px;
+      background: var(--border-main);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      display: none;
+    }
+    .rar-progress-large.visible { display: block; }
+    .rar-progress-large .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+      transition: width 0.3s;
+    }
+    .rar-progress-large .bar-text {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 600; color: var(--text-primary);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .download-result {
+      margin-top: 16px;
+      background: var(--accent-green-bg);
+      border-radius: 20px;
+      padding: 16px 20px;
+      border-left: 4px solid var(--accent-green);
+      display: none;
+    }
+    .download-result.visible { display: block; }
+    .download-result .result-title {
+      font-weight: 600; color: var(--accent-green); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .download-result .result-info { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; }
+    .download-result .result-info code {
+      background: var(--bg-input); padding: 2px 8px; border-radius: 6px;
+      color: var(--accent-blue); font-family: 'Consolas', monospace;
+    }
+
+    /* 保存路径信息 */
+    .save-path-info {
+      margin-top: 12px;
+      background: var(--accent-blue-bg);
+      border-radius: 16px;
+      padding: 12px 18px;
+      border-left: 4px solid var(--accent-blue);
+      display: none;
+    }
+    .save-path-info.visible { display: block; }
+    .save-path-info .path-label {
+      font-size: 0.82rem; color: var(--accent-blue); margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .save-path-info .path-value {
+      font-size: 0.9rem; color: var(--text-primary);
+      font-family: 'Consolas', monospace; word-break: break-all;
+    }
+
+    /* 教师编辑面板 */
+    .teacher-panel {
+      margin-top: 30px; background: var(--bg-teacher); border-radius: 28px;
+      padding: 20px 24px; border: 2px dashed var(--accent-yellow);
+      display: none;
+    }
+    .teacher-panel.visible { display: block; }
+    .teacher-panel h3 { color: var(--accent-yellow); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .teacher-panel .editor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .editor-box { background: var(--bg-editor-box); border-radius: 16px; padding: 12px 14px; border: 1px solid var(--border-main); }
+    .editor-box label { font-weight: 600; color: var(--accent-yellow); font-size: 0.85rem; display: block; margin-bottom: 4px; }
+    .editor-box input, .editor-box textarea, .editor-box select {
+      width: 100%; padding: 8px 12px; border: 1px solid var(--border-input);
+      border-radius: 12px; font-size: 0.9rem; outline: none; font-family: inherit;
+      background: var(--bg-input); color: var(--text-primary);
+    }
+    .editor-box textarea { resize: vertical; min-height: 50px; }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: var(--bg-modal); border-radius: 32px; padding: 32px 36px;
+      max-width: 400px; width: 90%;
+      box-shadow: var(--shadow-container);
+      text-align: center;
+      border: 1px solid var(--border-main);
+    }
+    .modal-box h3 { color: var(--text-primary); font-size: 1.3rem; margin-bottom: 8px; }
+    .modal-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .modal-box input {
+      width: 100%; padding: 14px 18px; border: 2px solid var(--border-input);
+      border-radius: 60px; font-size: 1.1rem; text-align: center;
+      letter-spacing: 6px; outline: none; margin-bottom: 16px;
+      background: var(--bg-input); color: var(--text-primary);
+    }
+    .modal-box input:focus { border-color: var(--accent-yellow); box-shadow: 0 0 0 4px rgba(245,158,11,0.2); }
+    .modal-btns { display: flex; gap: 12px; }
+    .modal-btns button { flex: 1; }
+    .hidden-modal { display: none; }
+
+    .footer-note {
+      margin-top: 32px; text-align: center; font-size: 0.8rem; color: var(--text-muted);
+      border-top: 1px solid var(--border-main); padding-top: 20px;
+      display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;
+    }
+    .footer-note i { margin-right: 6px; color: var(--accent-blue); }
+    .footer-author {
+      margin-top: 12px; text-align: center; font-size: 0.8rem;
+      color: var(--accent-blue); font-weight: 500; letter-spacing: 0.5px;
+    }
+    .footer-author i { margin-right: 6px; }
+
+    .strength-meter { display:flex; gap:8px; align-items:center; margin-top:4px; }
+    .meter-bar { flex:1; height:8px; background: var(--border-main); border-radius:20px; overflow:hidden; display:flex; }
+    .meter-bar .segment { flex:1; height:100%; background: var(--border-main); margin:0 1px; border-radius:20px; transition: background 0.3s; }
+    .strength-label { font-size:0.8rem; font-weight:600; min-width:70px; text-align:right; background: var(--bg-input); padding:4px 14px; border-radius:40px; color: var(--text-muted); }
+
+    .tag-edit { background: var(--accent-yellow); color: #fef3c7; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-left: 8px; }
+    .tag-html { background: var(--accent-blue-bg); color: var(--accent-blue); font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-left: 8px; }
+    .tag-rar { background: #d4492a; color: #fff; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-left: 8px; }
+
+    .pwd-requirements {
+      background: var(--accent-blue-bg); border-radius: 16px; padding: 10px 16px;
+      margin-top: 8px; border-left: 3px solid var(--accent-blue);
+    }
+    .pwd-requirements p { color: var(--accent-blue); font-size: 0.82rem; margin: 3px 0; display: flex; align-items: center; gap: 8px; }
+    .pwd-requirements i { font-size: 0.85rem; }
+    .req-ok { color: var(--accent-green) !important; }
+    .req-fail { color: var(--accent-red) !important; }
+
+    .pwd-hint {
+      background: var(--accent-yellow-bg); border-radius: 12px; padding: 8px 14px;
+      margin-top: 6px; border-left: 3px solid var(--accent-yellow);
+      font-size: 0.8rem; color: var(--accent-yellow);
+      display: flex; align-items: center; gap: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+<div class="exam-container">
+
+  <!-- 头部 -->
+  <div class="exam-header">
+    <div class="exam-title">
+      <i class="fas fa-laptop-code"></i>
+      <h1>信息技术考试 <span>石家庄 · 初二真题</span></h1>
+    </div>
+    <div class="exam-badge-group">
+      <div class="exam-badge">
+        <i class="fas fa-graduation-cap"></i> 全真模拟
+      </div>
+      <button class="theme-toggle-btn" id="themeToggleBtn">
+        <i class="fas fa-sun" id="themeIcon"></i>
+        <span id="themeText">亮色模式</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 主页导航 -->
+  <div class="home-grid" id="homeGrid">
+    <div class="home-btn active-module" data-module="moduleLogin"><i class="fas fa-key"></i><span>登录</span></div>
+    <div class="home-btn" data-module="moduleEmail"><i class="fas fa-envelope"></i><span>邮件</span></div>
+    <div class="home-btn" data-module="moduleChoice"><i class="fas fa-circle"></i><span>单选题</span></div>
+    <div class="home-btn" data-module="moduleJudge"><i class="fas fa-check-square"></i><span>判断题</span></div>
+    <div class="home-btn" data-module="moduleOperation"><i class="fas fa-edit"></i><span>操作题</span></div>
+    <div class="home-btn" data-module="moduleHtml"><i class="fas fa-code"></i><span>HTML操作</span></div>
+    <div class="home-btn" data-module="moduleRar"><i class="fas fa-file-archive"></i><span>压缩操作</span></div>
+    <div class="home-btn" data-module="moduleSubmit"><i class="fas fa-check-double"></i><span>交卷</span></div>
+  </div>
+
+  <!-- 模块容器 -->
+  <div class="module-container" id="moduleContainer">
+
+    <!-- 登录模块 -->
+    <div id="moduleLogin" class="module-content">
+      <div class="module-title"><i class="fas fa-key"></i> 登录 &amp; 密码强度</div>
+      <div class="row-field">
+        <label><i class="far fa-user"></i> 准考证号 (50401~50454 有效)</label>
+        <input type="text" id="username" placeholder="输入5位准考证号" value="">
+      </div>
+      <div class="row-field">
+        <label><i class="fas fa-lock"></i> 密码</label>
+        <input type="password" id="password" placeholder="设置密码" value="">
+      </div>
+      <div class="strength-meter">
+        <div class="meter-bar">
+          <div class="segment" id="seg1"></div>
+          <div class="segment" id="seg2"></div>
+          <div class="segment" id="seg3"></div>
+          <div class="segment" id="seg4"></div>
+        </div>
+        <span class="strength-label" id="strengthLabel">强度</span>
+      </div>
+      <div class="pwd-requirements" id="pwdRequirements">
+        <p id="reqLength"><i class="fas fa-circle"></i> 至少 8 位字符</p>
+        <p id="reqUpper"><i class="fas fa-circle"></i> 包含大写字母 (A-Z)</p>
+        <p id="reqLower"><i class="fas fa-circle"></i> 包含小写字母 (a-z)</p>
+        <p id="reqSpecial"><i class="fas fa-circle"></i> 包含特殊符号 (!@#$%^&amp;*等)</p>
+      </div>
+      <div class="pwd-hint">
+        <i class="fas fa-keyboard"></i>
+        <span>提示：只能在<strong>英文输入法</strong>下输入特殊符号（如 ! @ # $ % 等），中文标点（！＠＃￥％）无效。</span>
+      </div>
+      <div class="flex-row"><button class="btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> 模拟登录</button></div>
+      <div class="msg-box" id="loginMessage"><i class="fas fa-info-circle"></i><span id="loginMsgText">请输入准考证号(50401-50454)和密码</span></div>
+    </div>
+
+    <!-- 邮件模块 -->
+    <div id="moduleEmail" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-envelope"></i> 邮件发送</div>
+      <div class="row-field"><label><i class="fas fa-at"></i> 收件人</label><input type="email" id="recipient" placeholder="请输入收件人邮箱" value=""></div>
+      <div class="row-field"><label><i class="fas fa-tag"></i> 主题</label><input type="text" id="subject" placeholder="邮件主题" value="信息技术考试确认"></div>
+      <div class="row-field"><label><i class="fas fa-pencil-alt"></i> 内容</label><textarea id="emailBody" placeholder="邮件内容...">尊敬的考生，请确认考试信息。石家庄中考信息技术考试将于2026年6月举行。</textarea></div>
+      <div class="flex-row"><button class="btn-success" id="sendEmailBtn"><i class="fas fa-paper-plane"></i> 发送邮件</button></div>
+      <div class="msg-box" id="emailStatus" style="border-left-color: var(--accent-green);"><i class="fas fa-check-circle"></i><span id="emailStatusText">就绪</span></div>
+    </div>
+
+    <!-- 单选题模块 -->
+    <div id="moduleChoice" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-circle"></i> 单选题 (每题2分)</div>
+      <div id="choiceContainer"></div>
+      <div class="text-muted"><i class="fas fa-info-circle"></i> 共<span id="choiceCount">5</span>题，每题2分</div>
+    </div>
+
+    <!-- 判断题模块 -->
+    <div id="moduleJudge" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-check-square"></i> 判断题 (每题1分)</div>
+      <div id="judgeContainer"></div>
+      <div class="text-muted"><i class="fas fa-info-circle"></i> 共<span id="judgeCount">5</span>题，每题1分</div>
+    </div>
+
+    <!-- 操作题模块 -->
+    <div id="moduleOperation" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-edit"></i> 操作题 (10分)</div>
+      <div id="operationContainer"></div>
+    </div>
+
+    <!-- HTML操作题模块 -->
+    <div id="moduleHtml" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-code"></i> HTML 操作题 (15分) <span class="tag-html">可插入图片/改标题级别</span></div>
+      <div class="question-item">
+        <div class="q-text">12. 请修改下方HTML代码：将标题改为二级标题 <code>&lt;h2&gt;</code>，并插入一张图片（使用 placeholder 图片）。</div>
+        <div class="text-muted" style="margin:4px 0 10px;"><i class="fas fa-info-circle"></i> 示例：图片标签 <code>&lt;img src="..." alt="..."&gt;</code>，标题标签 <code>&lt;h1&gt;~&lt;h6&gt;</code>。修改后点击"实时预览"查看效果。</div>
+
+        <div class="html-tools">
+          <button class="tool-btn" data-html-insert="h1"><i class="fas fa-heading"></i> 一级标题</button>
+          <button class="tool-btn" data-html-insert="h2"><i class="fas fa-heading"></i> 二级标题</button>
+          <button class="tool-btn" data-html-insert="h3"><i class="fas fa-heading"></i> 三级标题</button>
+          <button class="tool-btn" data-html-insert="p"><i class="fas fa-paragraph"></i> 段落</button>
+          <button class="tool-btn" data-html-insert="img"><i class="fas fa-image"></i> 插入图片</button>
+          <button class="tool-btn" data-html-insert="br"><i class="fas fa-level-down-alt"></i> 换行</button>
+        </div>
+
+        <div class="html-editor-wrap">
+          <div class="html-editor-box">
+            <div style="font-size:0.8rem; color: var(--text-muted); margin-bottom:8px;"><i class="fas fa-code"></i> 代码编辑区</div>
+            <textarea id="htmlCodeInput" spellcheck="false">
+<!-- 请在此修改HTML代码 -->
+<h1>石家庄中考信息技术</h1>
+<p>欢迎参加初二信息技术考试！</p>
+<p>请在下方插入图片，并将标题改为二级标题。</p>
+            </textarea>
+          </div>
+          <div class="html-preview-box">
+            <div class="preview-header"><i class="fas fa-eye"></i> 实时预览效果</div>
+            <div id="htmlPreview"></div>
+          </div>
+        </div>
+        <div class="flex-row" style="margin-top:12px;">
+          <button class="btn-warn" id="htmlPreviewBtn"><i class="fas fa-sync-alt"></i> 刷新预览</button>
+          <button class="btn-primary btn-sm" id="htmlResetBtn"><i class="fas fa-undo"></i> 重置示例</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 真实文件压缩操作模块 ========== -->
+    <div id="moduleRar" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-file-archive"></i> 压缩操作题 (15分) <span class="tag-rar">真实文件压缩</span></div>
+
+      <!-- 题目要求 -->
+      <div class="question-item" style="background: var(--accent-blue-bg);">
+        <div class="q-text" style="color: var(--accent-blue);">
+          <i class="fas fa-bullhorn"></i> 题目要求：
+        </div>
+        <ul style="margin-left: 20px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.9;">
+          <li>请从本机任意选择 <strong>1~5 个文件</strong> 上传（可以是文档、图片、文本等任意类型）；</li>
+          <li>将上传的文件压缩为 <strong>.zip</strong> 格式；</li>
+          <li>设置压缩包密码为 <strong>sjz2026</strong>（区分大小写）；</li>
+          <li>点击"开始真实压缩"按钮，浏览器将在本地完成压缩；</li>
+          <li>压缩完成后，点击"<strong>选择文件夹并保存</strong>"，在弹出的系统对话框中选择 <code>D:\考生文件夹\</code> 目录，将压缩包保存到那里。</li>
+        </ul>
+        <div class="text-muted" style="margin-top:8px;">
+          <i class="fas fa-info-circle"></i> 说明：由于浏览器安全限制无法直接生成 .rar 格式，本题使用 .zip 格式模拟。保存时需要您手动在系统对话框中选择目标文件夹。
+        </div>
+      </div>
+
+      <!-- 上传区 -->
+      <div class="upload-zone" id="uploadZone">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <div class="upload-title">点击或拖拽文件到此处上传</div>
+        <div class="upload-hint">支持多选，最多 5 个文件，总大小不超过 50MB</div>
+        <input type="file" id="fileInput" multiple>
+      </div>
+
+      <!-- 已上传文件列表 -->
+      <div class="file-list-box" id="fileListBox" style="display:none;">
+        <div class="file-list-title">
+          <i class="fas fa-folder-open"></i>
+          已上传文件（<span id="fileCount">0</span> 个）
+          <button class="btn-sm btn-danger" id="clearFilesBtn" style="margin-left:auto; padding:4px 12px; font-size:0.75rem;">
+            <i class="fas fa-trash"></i> 清空
+          </button>
+        </div>
+        <div id="fileListContainer"></div>
+      </div>
+
+      <!-- 压缩参数设置 -->
+      <div class="row-field" style="margin-top:16px;">
+        <label><i class="fas fa-lock"></i> 压缩包密码（区分大小写）</label>
+        <input type="text" id="rarPwdInput" placeholder="请输入密码" value="">
+      </div>
+      <div class="row-field">
+        <label><i class="fas fa-file-signature"></i> 压缩包文件名</label>
+        <input type="text" id="rarNameInput" placeholder="xxx.zip" value="信息技术考试.zip">
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="flex-row" style="margin-top:16px;">
+        <button class="btn-success" id="rarStartRealBtn" disabled>
+          <i class="fas fa-play"></i> 开始真实压缩
+        </button>
+        <button class="btn-warn" id="rarResetBtn">
+          <i class="fas fa-undo"></i> 重置
+        </button>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="rar-progress-large" id="rarProgressLarge">
+        <div class="bar" id="rarProgressBarReal"></div>
+        <div class="bar-text" id="rarProgressTextReal">准备中...</div>
+      </div>
+
+      <!-- 保存路径信息（选择文件夹后显示） -->
+      <div class="save-path-info" id="savePathInfo">
+        <div class="path-label"><i class="fas fa-folder-open"></i> 已选择保存位置：</div>
+        <div class="path-value" id="savePathValue">-</div>
+      </div>
+
+      <!-- 下载结果 -->
+      <div class="download-result" id="downloadResult">
+        <div class="result-title"><i class="fas fa-check-circle"></i> 压缩成功！</div>
+        <div class="result-info" id="downloadInfo"></div>
+      </div>
+
+      <!-- 评分反馈 -->
+      <div class="msg-box" id="rarStatus" style="border-left-color: var(--accent-blue); margin-top:16px;">
+        <i class="fas fa-info-circle"></i>
+        <span id="rarStatusText">请先上传文件，然后设置密码并点击"开始真实压缩"。</span>
+      </div>
+
+      <!-- 保存与评分按钮 -->
+      <div class="flex-row" style="margin-top:12px;">
+        <button class="btn-primary" id="rarSaveDirBtn" disabled>
+          <i class="fas fa-folder-open"></i> 选择文件夹并保存
+        </button>
+        <button class="btn-success" id="rarConfirmBtn" disabled>
+          <i class="fas fa-check-double"></i> 提交压缩结果评分
+        </button>
+      </div>
+    </div>
+
+    <!-- 交卷模块 -->
+    <div id="moduleSubmit" class="module-content hidden-module">
+      <div class="module-title"><i class="fas fa-check-double"></i> 交卷 &amp; 成绩</div>
+      <div style="background: var(--bg-card); border-radius:24px; padding:20px 24px; border:1px solid var(--border-main);">
+        <p style="font-weight:500; color: var(--text-secondary);"><i class="fas fa-clipboard-list"></i> 确认所有题目已作答，点击交卷。</p>
+        <div class="flex-row" style="margin-top:14px;"><button class="btn-danger" id="submitExamBtn"><i class="fas fa-upload"></i> 交卷</button></div>
+        <div class="msg-box" id="submitMessage" style="margin-top:16px; border-left-color: var(--accent-red); background: var(--accent-red-bg);">
+          <i class="fas fa-hourglass-half"></i>
+          <span id="submitMsgText">完成所有题目后点击交卷</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 教师编辑区触发按钮 -->
+  <div class="flex-row" style="margin-top: 24px; justify-content: flex-end;">
+    <button class="btn-teacher" id="teacherPanelBtn"><i class="fas fa-lock"></i> 教师编辑区</button>
+  </div>
+
+  <!-- 教师编辑面板 -->
+  <div class="teacher-panel" id="teacherPanel">
+    <h3><i class="fas fa-chalkboard-teacher"></i> 教师/命题人编辑区 <span class="tag-edit">密码已解锁</span>
+      <button class="btn-sm btn-danger" id="lockTeacherBtn" style="margin-left:auto; padding:6px 14px; font-size:0.75rem;"><i class="fas fa-lock"></i> 锁定</button>
+    </h3>
+    <div class="editor-grid" id="editorGrid">
+      <div class="editor-box">
+        <label>✅ 有效准考证号范围</label>
+        <div class="flex-row" style="gap:8px;">
+          <input type="number" id="accMin" value="50401" placeholder="最小" style="flex:1;">
+          <span>~</span>
+          <input type="number" id="accMax" value="50454" placeholder="最大" style="flex:1;">
+        </div>
+        <div class="text-muted" style="margin-top:4px;">当前有效：<span id="accRangeDisplay">50401~50454</span>，共<span id="accCountDisplay">54</span>人</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 18px;">
+      <h4 style="color: var(--accent-yellow); font-size:0.95rem; margin-bottom:10px;"><i class="fas fa-file-archive"></i> 压缩操作题编辑</h4>
+      <div id="rarEditor" class="editor-grid"></div>
+    </div>
+
+    <div class="flex-row" style="margin-top: 18px; justify-content: flex-end;">
+      <button class="btn-primary btn-sm" id="saveEditsBtn"><i class="fas fa-save"></i> 保存并刷新题目</button>
+    </div>
+  </div>
+
+  <!-- 教师密码弹窗 -->
+  <div class="modal-overlay hidden-modal" id="teacherModal">
+    <div class="modal-box">
+      <h3><i class="fas fa-shield-alt" style="color: var(--accent-yellow);"></i> 教师身份验证</h3>
+      <p>请输入教师编辑区密码</p>
+      <input type="password" id="teacherPasswordInput" placeholder="••••••" maxlength="6" autocomplete="off">
+      <div class="modal-btns">
+        <button class="btn-primary btn-sm" id="teacherConfirmBtn" style="flex:1;"><i class="fas fa-check"></i> 确认</button>
+        <button class="btn-danger btn-sm" id="teacherCancelBtn" style="flex:1;"><i class="fas fa-times"></i> 取消</button>
+      </div>
+      <div class="text-muted" style="margin-top:12px; font-size:0.75rem;">密码提示：6位数字</div>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer-note">
+    <span><i class="fas fa-database"></i> 石家庄市考试院 模拟</span>
+  </div>
+  <div class="footer-author">
+    <i class="fas fa-user-graduate"></i> 该网页由初二4班赵梓鑫创建
+  </div>
+</div>
+</div>
+
+<script>
+  (function() {
+    // ============================================================
+    // ★★★ 教师密码 ★★★
+    // ============================================================
+    const TEACHER_PASSWORD = '131212';
+
+    // ============================================================
+    // ★★★ 主题切换 ★★★
+    // ============================================================
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+
+    function loadTheme() {
+      const saved = localStorage.getItem('sjz_theme') || 'dark';
+      if (saved === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.className = 'fas fa-moon';
+        themeText.textContent = '暗色模式';
+      } else {
+        document.body.classList.remove('light-theme');
+        themeIcon.className = 'fas fa-sun';
+        themeText.textContent = '亮色模式';
+      }
+    }
+    loadTheme();
+
+    themeToggleBtn.addEventListener('click', function() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      if (isLight) {
+        themeIcon.className = 'fas fa-moon';
+        themeText.textContent = '暗色模式';
+        localStorage.setItem('sjz_theme', 'light');
+      } else {
+        themeIcon.className = 'fas fa-sun';
+        themeText.textContent = '亮色模式';
+        localStorage.setItem('sjz_theme', 'dark');
+      }
+    });
+
+    // ============================================================
+    // ★★★ 题库数据 ★★★
+    // ============================================================
+    const DEFAULT_DATA = {
+      accountMin: 50401,
+      accountMax: 50454,
+
+      choiceQuestions: [
+        { id: 'q1', text: '人与人之间可以通过语言交流，此时语言是信息的（　）。', options: [ { value: 'A', label: 'A. 载体' }, { value: 'B', label: 'B. 时效' }, { value: 'C', label: 'C. 价值' }, { value: 'D', label: 'D. 传递' } ], answer: 'A' },
+        { id: 'q2', text: '世界上第一台电子计算机的名称是（　）。', options: [ { value: 'A', label: 'A. Apple' }, { value: 'B', label: 'B. ENIAC' }, { value: 'C', label: 'C. Oliver' }, { value: 'D', label: 'D. Inter' } ], answer: 'B' },
+        { id: 'q3', text: '以下不属于信息技术范畴的是（　）。', options: [ { value: 'A', label: 'A. 传感技术' }, { value: 'B', label: 'B. 纳米技术' }, { value: 'C', label: 'C. 通信技术' }, { value: 'D', label: 'D. 计算机技术' } ], answer: 'B' },
+        { id: 'q4', text: '计算机存储容量的基本单位是（　）。', options: [ { value: 'A', label: 'A. 字节' }, { value: 'B', label: 'B. 位' }, { value: 'C', label: 'C. 字' }, { value: 'D', label: 'D. 兆' } ], answer: 'A' },
+        { id: 'q5', text: '以下属于操作系统软件的是（　）。', options: [ { value: 'A', label: 'A. Photoshop' }, { value: 'B', label: 'B. Word' }, { value: 'C', label: 'C. Windows 11' }, { value: 'D', label: 'D. Excel' } ], answer: 'C' }
+      ],
+
+      judgeQuestions: [
+        { id: 'q6', text: '没有使用过的计算机称为“裸机”。', answer: 'false' },
+        { id: 'q7', text: '在Word中，对段落格式的任何设置只是对光标所在的段落或选定的段落有效。', answer: 'true' },
+        { id: 'q8', text: '互联网和万维网（WWW）是同一个概念。', answer: 'false' },
+        { id: 'q9', text: '在PowerPoint中，每张幻灯片必须用统一版式。', answer: 'false' },
+        { id: 'q10', text: '计算机病毒是一种计算机程序，可以自我复制并传播。', answer: 'true' }
+      ],
+
+      operation: {
+        text: '请写出在WPS文字中插入表格的两种方法。',
+        keywords: ['插入', '表格'],
+        fullScore: 10
+      },
+
+      htmlOperation: {
+        text: '请修改下方HTML代码：将标题改为二级标题 <h2>，并插入一张图片（使用 placeholder 图片）。',
+        sampleCode: `<!-- 请在此修改HTML代码 -->
+<h1>石家庄中考信息技术</h1>
+<p>欢迎参加初二信息技术考试！</p>
+<p>请在下方插入图片，并将标题改为二级标题。</p>`,
+        fullScore: 15
+      },
+
+      rarOperation: {
+        expectedPwd: 'sjz2026',
+        expectedFormat: 'zip',
+        minFiles: 1,
+        maxFiles: 5,
+        fullScore: 15
+      }
+    };
+
+    let examData = JSON.parse(localStorage.getItem('sjz_exam_data_v7')) || JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+    // ============================================================
+    // 模块切换
+    // ============================================================
+    const homeBtns = document.querySelectorAll('.home-btn');
+    const moduleContainer = document.getElementById('moduleContainer');
+    const moduleContents = moduleContainer.querySelectorAll('.module-content');
+
+    function switchModule(moduleId) {
+      moduleContents.forEach(mod => mod.classList.add('hidden-module'));
+      const target = document.getElementById(moduleId);
+      if (target) target.classList.remove('hidden-module');
+      homeBtns.forEach(btn => btn.classList.remove('active-module'));
+      homeBtns.forEach(btn => {
+        if (btn.dataset.module === moduleId) btn.classList.add('active-module');
+      });
+    }
+
+    homeBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const moduleId = this.dataset.module;
+        if (moduleId) switchModule(moduleId);
+      });
+    });
+    switchModule('moduleLogin');
+
+    // ============================================================
+    // 题目渲染
+    // ============================================================
+    function renderChoiceQuestions() {
+      const container = document.getElementById('choiceContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      examData.choiceQuestions.forEach((q, idx) => {
+        const div = document.createElement('div');
+        div.className = 'question-item';
+        let optionsHtml = '';
+        q.options.forEach(opt => { optionsHtml += `<label><input type="radio" name="${q.id}" value="${opt.value}"> ${opt.label}</label>`; });
+        div.innerHTML = `<div class="q-text">${idx+1}. ${q.text}</div><div class="options">${optionsHtml}</div>`;
+        container.appendChild(div);
+      });
+      document.getElementById('choiceCount').textContent = examData.choiceQuestions.length;
+    }
+
+    function renderJudgeQuestions() {
+      const container = document.getElementById('judgeContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      examData.judgeQuestions.forEach((q, idx) => {
+        const div = document.createElement('div');
+        div.className = 'question-item';
+        div.innerHTML = `
+          <div class="q-text">${idx+1 + examData.choiceQuestions.length}. ${q.text}</div>
+          <div class="judge-group">
+            <label><input type="radio" name="${q.id}" value="true"> 正确</label>
+            <label><input type="radio" name="${q.id}" value="false"> 错误</label>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      document.getElementById('judgeCount').textContent = examData.judgeQuestions.length;
+    }
+
+    function renderOperationQuestion() {
+      const container = document.getElementById('operationContainer');
+      if (!container) return;
+      const q = examData.operation;
+      container.innerHTML = `
+        <div class="question-item">
+          <div class="q-text">${examData.choiceQuestions.length + examData.judgeQuestions.length + 1}. ${q.text}</div>
+          <div class="row-field"><textarea id="opAnswer" rows="3" placeholder="输入操作步骤..."></textarea></div>
+          <div class="text-muted" style="margin-top:6px;"><i class="fas fa-lightbulb"></i> 关键词：${q.keywords.join('、')} (满分${q.fullScore}分)</div>
+        </div>
+      `;
+    }
+
+    function renderAllQuestions() {
+      renderChoiceQuestions();
+      renderJudgeQuestions();
+      renderOperationQuestion();
+    }
+    renderAllQuestions();
+
+    // ============================================================
+    // HTML操作题
+    // ============================================================
+    const htmlCodeInput = document.getElementById('htmlCodeInput');
+    const htmlPreview = document.getElementById('htmlPreview');
+    const htmlPreviewBtn = document.getElementById('htmlPreviewBtn');
+    const htmlResetBtn = document.getElementById('htmlResetBtn');
+
+    if (htmlCodeInput) htmlCodeInput.value = examData.htmlOperation.sampleCode;
+
+    function refreshHtmlPreview() {
+      if (!htmlPreview || !htmlCodeInput) return;
+      let rawHtml = htmlCodeInput.value;
+      rawHtml = rawHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+      rawHtml = rawHtml.replace(/<img([^>]*?)src=["']\s*["']([^>]*?)>/gi, '<img$1src="https://via.placeholder.com/300x150/1f5a9e/ffffff?text=示例图片"$2>');
+      rawHtml = rawHtml.replace(/<img((?![^>]*src=)[^>]*)>/gi, '<img$1 src="https://via.placeholder.com/300x150/1f5a9e/ffffff?text=示例图片">');
+      htmlPreview.innerHTML = rawHtml;
+    }
+
+    if (htmlPreviewBtn) htmlPreviewBtn.addEventListener('click', refreshHtmlPreview);
+    if (htmlCodeInput) {
+      let timer;
+      htmlCodeInput.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(refreshHtmlPreview, 600);
+      });
+    }
+    if (htmlResetBtn) {
+      htmlResetBtn.addEventListener('click', function() {
+        if (htmlCodeInput) { htmlCodeInput.value = examData.htmlOperation.sampleCode; refreshHtmlPreview(); }
+      });
+    }
+    refreshHtmlPreview();
+
+    document.querySelectorAll('.tool-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const type = this.dataset.htmlInsert;
+        const ta = document.getElementById('htmlCodeInput');
+        if (!ta) return;
+        let insertText = '';
+        switch(type) {
+          case 'h1': insertText = '<h1>一级标题</h1>\n'; break;
+          case 'h2': insertText = '<h2>二级标题</h2>\n'; break;
+          case 'h3': insertText = '<h3>三级标题</h3>\n'; break;
+          case 'p': insertText = '<p>段落文字</p>\n'; break;
+          case 'img': insertText = '<img src="https://via.placeholder.com/300x150/1f5a9e/ffffff?text=示例图片" alt="示例图片">\n'; break;
+          case 'br': insertText = '<br>\n'; break;
+        }
+        const start = ta.selectionStart;
+        const end = ta.selectionEnd;
+        ta.value = ta.value.substring(0, start) + insertText + ta.value.substring(end);
+        ta.focus();
+        ta.selectionStart = ta.selectionEnd = start + insertText.length;
+        refreshHtmlPreview();
+      });
+    });
+
+    // ============================================================
+    // ★★★ 真实文件压缩操作 (JSZip + File System Access API) ★★★
+    // ============================================================
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileListBox = document.getElementById('fileListBox');
+    const fileListContainer = document.getElementById('fileListContainer');
+    const fileCountSpan = document.getElementById('fileCount');
+    const clearFilesBtn = document.getElementById('clearFilesBtn');
+    const rarPwdInput = document.getElementById('rarPwdInput');
+    const rarNameInput = document.getElementById('rarNameInput');
+    const rarStartRealBtn = document.getElementById('rarStartRealBtn');
+    const rarResetBtn = document.getElementById('rarResetBtn');
+    const rarProgressLarge = document.getElementById('rarProgressLarge');
+    const rarProgressBarReal = document.getElementById('rarProgressBarReal');
+    const rarProgressTextReal = document.getElementById('rarProgressTextReal');
+    const downloadResult = document.getElementById('downloadResult');
+    const downloadInfo = document.getElementById('downloadInfo');
+    const rarStatusText = document.getElementById('rarStatusText');
+    const rarStatus = document.getElementById('rarStatus');
+    const rarConfirmBtn = document.getElementById('rarConfirmBtn');
+    const rarSaveDirBtn = document.getElementById('rarSaveDirBtn');
+    const savePathInfo = document.getElementById('savePathInfo');
+    const savePathValue = document.getElementById('savePathValue');
+
+    let uploadedFiles = [];   // { name, size, file }
+    let compressedBlob = null;
+    let compressedFileName = '';
+    let savedToFolder = false;   // 是否已保存到真实文件夹
+    let savedFolderName = '';    // 保存的文件夹名
+
+    // 检查浏览器是否支持 File System Access API
+    const supportsFileSystemAccess = 'showSaveFilePicker' in window;
+
+    // 格式化文件大小
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    // 渲染文件列表
+    function renderFileList() {
+      if (uploadedFiles.length === 0) {
+        fileListBox.style.display = 'none';
+        rarStartRealBtn.disabled = true;
+        return;
+      }
+      fileListBox.style.display = 'block';
+      fileCountSpan.textContent = uploadedFiles.length;
+      fileListContainer.innerHTML = '';
+      uploadedFiles.forEach((f, idx) => {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        const ext = f.name.split('.').pop().toLowerCase();
+        let iconClass = 'fa-file';
+        if (['jpg','jpeg','png','gif','bmp','webp'].includes(ext)) iconClass = 'fa-file-image';
+        else if (['doc','docx'].includes(ext)) iconClass = 'fa-file-word';
+        else if (['xls','xlsx'].includes(ext)) iconClass = 'fa-file-excel';
+        else if (['ppt','pptx'].includes(ext)) iconClass = 'fa-file-powerpoint';
+        else if (['pdf'].includes(ext)) iconClass = 'fa-file-pdf';
+        else if (['txt','md'].includes(ext)) iconClass = 'fa-file-alt';
+        else if (['zip','rar','7z'].includes(ext)) iconClass = 'fa-file-archive';
+        else if (['mp3','wav'].includes(ext)) iconClass = 'fa-file-audio';
+        else if (['mp4','avi','mov'].includes(ext)) iconClass = 'fa-file-video';
+        div.innerHTML = `
+          <i class="fas ${iconClass} file-icon"></i>
+          <span class="file-name" title="${f.name}">${f.name}</span>
+          <span class="file-size">${formatSize(f.size)}</span>
+          <button class="remove-btn" data-idx="${idx}" title="移除"><i class="fas fa-times"></i></button>
+        `;
+        fileListContainer.appendChild(div);
+      });
+      fileListContainer.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(this.dataset.idx);
+          uploadedFiles.splice(idx, 1);
+          renderFileList();
+        });
+      });
+      rarStartRealBtn.disabled = uploadedFiles.length === 0;
+    }
+
+    // 处理文件选择
+    function handleFiles(files) {
+      const maxFiles = examData.rarOperation.maxFiles || 5;
+      const maxSize = 50 * 1024 * 1024;
+      let totalSize = uploadedFiles.reduce((s, f) => s + f.size, 0);
+      const newFiles = Array.from(files);
+      for (const f of newFiles) {
+        if (uploadedFiles.length >= maxFiles) {
+          alert(`⚠️ 最多只能上传 ${maxFiles} 个文件`);
+          break;
+        }
+        if (totalSize + f.size > maxSize) {
+          alert(`⚠️ 文件总大小不能超过 50MB`);
+          break;
+        }
+        uploadedFiles.push({ name: f.name, size: f.size, file: f });
+        totalSize += f.size;
+      }
+      renderFileList();
+    }
+
+    uploadZone.addEventListener('click', function() { fileInput.click(); });
+    fileInput.addEventListener('change', function() {
+      handleFiles(this.files);
+      this.value = '';
+    });
+
+    uploadZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('dragover');
+    });
+    uploadZone.addEventListener('dragleave', function() {
+      this.classList.remove('dragover');
+    });
+    uploadZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer.files);
+    });
+
+    clearFilesBtn.addEventListener('click', function() {
+      uploadedFiles = [];
+      renderFileList();
+      downloadResult.classList.remove('visible');
+      rarProgressLarge.classList.remove('visible');
+      savePathInfo.classList.remove('visible');
+      rarConfirmBtn.disabled = true;
+      rarSaveDirBtn.disabled = true;
+      compressedBlob = null;
+      savedToFolder = false;
+    });
+
+    // ★ 开始真实压缩
+    rarStartRealBtn.addEventListener('click', async function() {
+      if (uploadedFiles.length === 0) {
+        alert('请先上传文件');
+        return;
+      }
+      if (!rarPwdInput.value) {
+        alert('请设置压缩包密码');
+        rarPwdInput.focus();
+        return;
+      }
+      if (!rarNameInput.value.trim()) {
+        alert('请填写压缩包文件名');
+        rarNameInput.focus();
+        return;
+      }
+
+      if (typeof JSZip === 'undefined') {
+        rarStatusText.innerHTML = '❌ JSZip 库加载失败，请检查网络后刷新页面';
+        rarStatus.style.borderLeftColor = 'var(--accent-red)';
+        return;
+      }
+
+      rarStartRealBtn.disabled = true;
+      rarStartRealBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> 压缩中...';
+      rarProgressLarge.classList.add('visible');
+      downloadResult.classList.remove('visible');
+      savePathInfo.classList.remove('visible');
+      rarConfirmBtn.disabled = true;
+      rarSaveDirBtn.disabled = true;
+      savedToFolder = false;
+
+      try {
+        const zip = new JSZip();
+        for (let i = 0; i < uploadedFiles.length; i++) {
+          const f = uploadedFiles[i];
+          zip.file(f.name, f.file);
+        }
+
+        rarProgressBarReal.style.width = '30%';
+        rarProgressTextReal.textContent = '正在读取文件...';
+        await new Promise(r => setTimeout(r, 300));
+
+        rarProgressBarReal.style.width = '60%';
+        rarProgressTextReal.textContent = '正在压缩...';
+        await new Promise(r => setTimeout(r, 400));
+
+        const pwd = rarPwdInput.value;
+        const content = await zip.generateAsync({
+          type: 'blob',
+          compression: 'DEFLATE',
+          compressionOptions: { level: 9 },
+          password: pwd,
+          encryptStrength: 3
+        }, function(metadata) {
+          const pct = Math.round(metadata.percent);
+          rarProgressBarReal.style.width = pct + '%';
+          rarProgressTextReal.textContent = `压缩中 ${pct}%`;
+        });
+
+        rarProgressBarReal.style.width = '100%';
+        rarProgressTextReal.textContent = '压缩完成，等待保存...';
+        await new Promise(r => setTimeout(r, 300));
+
+        let fileName = rarNameInput.value.trim();
+        if (!fileName.toLowerCase().endsWith('.zip')) {
+          fileName += '.zip';
+        }
+        compressedFileName = fileName;
+        compressedBlob = content;
+
+        // 显示结果
+        downloadResult.classList.add('visible');
+        downloadInfo.innerHTML = `
+          <div><i class="fas fa-file-archive"></i> 压缩包：<code>${fileName}</code></div>
+          <div><i class="fas fa-weight-hanging"></i> 文件大小：<code>${formatSize(content.size)}</code></div>
+          <div><i class="fas fa-file"></i> 包含文件：<code>${uploadedFiles.length} 个</code></div>
+          <div><i class="fas fa-lock"></i> 密码保护：<code>${pwd.replace(/./g, '•')}</code></div>
+          <div style="margin-top:8px; color: var(--accent-yellow);">
+            <i class="fas fa-hand-point-right"></i> 请点击下方"<strong>选择文件夹并保存</strong>"，选择 D:\\考生文件夹\\ 目录。
+          </div>
+        `;
+        rarStatusText.innerHTML = `✅ 压缩成功！点击"选择文件夹并保存"按钮，在弹出的系统对话框中选择保存位置。`;
+        rarStatus.style.borderLeftColor = 'var(--accent-green)';
+        rarStatus.querySelector('i').className = 'fas fa-check-circle';
+
+        // 启用保存按钮
+        if (supportsFileSystemAccess) {
+          rarSaveDirBtn.disabled = false;
+        } else {
+          // 不支持 API，用传统下载方式
+          rarSaveDirBtn.disabled = false;
+          rarStatusText.innerHTML += ' （您的浏览器不支持文件夹选择，将使用默认下载方式）';
+        }
+
+      } catch (err) {
+        console.error('压缩失败:', err);
+        rarProgressTextReal.textContent = '压缩失败 ❌';
+        rarStatusText.innerHTML = `❌ 压缩失败：${err.message}`;
+        rarStatus.style.borderLeftColor = 'var(--accent-red)';
+        rarStatus.querySelector('i').className = 'fas fa-times-circle';
+      } finally {
+        rarStartRealBtn.disabled = false;
+        rarStartRealBtn.innerHTML = '<i class="fas fa-play"></i> 开始真实压缩';
+      }
+    });
+
+    // ★ 选择文件夹并保存
+    rarSaveDirBtn.addEventListener('click', async function() {
+      if (!compressedBlob) {
+        alert('请先完成压缩');
+        return;
+      }
+
+      const fileName = compressedFileName;
+
+      // 优先使用 File System Access API（Chrome/Edge 支持）
+      if (supportsFileSystemAccess) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: fileName,
+            types: [{
+              description: 'ZIP 压缩包',
+              accept: { 'application/zip': ['.zip'] }
+            }]
+          });
+
+          const writable = await handle.createWritable();
+          await writable.write(compressedBlob);
+          await writable.close();
+
+          // 获取保存位置信息
+          savedFolderName = handle.name || fileName;
+          savedToFolder = true;
+
+          savePathInfo.classList.add('visible');
+          savePathValue.innerHTML = `<i class="fas fa-check-circle" style="color: var(--accent-green);"></i> 已保存到：<strong>${savedFolderName}</strong>`;
+
+          rarStatusText.innerHTML = `✅ 文件已保存到您选择的文件夹：<code>${savedFolderName}</code>`;
+          rarStatus.style.borderLeftColor = 'var(--accent-green)';
+          rarStatus.querySelector('i').className = 'fas fa-check-circle';
+
+          // 启用评分按钮
+          rarConfirmBtn.disabled = false;
+
+          alert(`✅ 保存成功！\n文件已保存到您选择的文件夹。\n文件名：${savedFolderName}`);
+
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            rarStatusText.innerHTML = '⚠️ 您取消了保存操作';
+            rarStatus.style.borderLeftColor = 'var(--accent-yellow)';
+          } else {
+            console.error('保存失败:', err);
+            rarStatusText.innerHTML = `❌ 保存失败：${err.message}`;
+            rarStatus.style.borderLeftColor = 'var(--accent-red)';
+          }
+        }
+      } else {
+        // 兼容方案：用传统下载方式
+        const url = URL.createObjectURL(compressedBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+        savedToFolder = true;
+        savedFolderName = '下载文件夹（默认）';
+        savePathInfo.classList.add('visible');
+        savePathValue.innerHTML = `<i class="fas fa-download" style="color: var(--accent-blue);"></i> 已通过默认下载保存：<strong>${savedFolderName}</strong>`;
+        rarStatusText.innerHTML = `✅ 文件已通过浏览器下载到默认下载文件夹。`;
+        rarStatus.style.borderLeftColor = 'var(--accent-green)';
+        rarStatus.querySelector('i').className = 'fas fa-check-circle';
+        rarConfirmBtn.disabled = false;
+      }
+    });
+
+    // 重置
+    rarResetBtn.addEventListener('click', function() {
+      uploadedFiles = [];
+      compressedBlob = null;
+      compressedFileName = '';
+      savedToFolder = false;
+      savedFolderName = '';
+      rarPwdInput.value = '';
+      rarNameInput.value = '信息技术考试.zip';
+      renderFileList();
+      downloadResult.classList.remove('visible');
+      rarProgressLarge.classList.remove('visible');
+      savePathInfo.classList.remove('visible');
+      rarProgressBarReal.style.width = '0%';
+      rarProgressTextReal.textContent = '准备中...';
+      rarConfirmBtn.disabled = true;
+      rarSaveDirBtn.disabled = true;
+      rarStatusText.innerHTML = '已重置，请重新上传文件。';
+      rarStatus.style.borderLeftColor = 'var(--accent-blue)';
+      rarStatus.querySelector('i').className = 'fas fa-info-circle';
+    });
+
+    // ★ 提交压缩结果评分
+    rarConfirmBtn.addEventListener('click', function() {
+      if (!compressedBlob) {
+        rarStatusText.innerHTML = '⚠️ 请先完成压缩操作';
+        rarStatus.style.borderLeftColor = 'var(--accent-yellow)';
+        return;
+      }
+
+      let score = 0;
+      let details = [];
+      const expected = examData.rarOperation;
+
+      // 1. 文件数量检查 (3分)
+      if (uploadedFiles.length >= expected.minFiles && uploadedFiles.length <= expected.maxFiles) {
+        score += 3;
+        details.push(`✅ 文件数量正确 (${uploadedFiles.length}个) (+3分)`);
+      } else {
+        details.push(`❌ 文件数量不符合要求（应为 ${expected.minFiles}~${expected.maxFiles} 个）`);
+      }
+
+      // 2. 格式检查 (3分)
+      if (compressedFileName.toLowerCase().endsWith('.zip')) {
+        score += 3;
+        details.push(`✅ 压缩格式正确 (.zip) (+3分)`);
+      } else {
+        details.push(`❌ 压缩格式错误（应为 .zip）`);
+      }
+
+      // 3. 密码检查 (5分)
+      if (rarPwdInput.value === expected.expectedPwd) {
+        score += 5;
+        details.push(`✅ 密码正确 (+5分)`);
+      } else {
+        details.push(`❌ 密码错误（应为 ${expected.expectedPwd}）`);
+      }
+
+      // 4. 是否已保存到文件夹 (4分) —— 本次新增
+      if (savedToFolder) {
+        score += 4;
+        details.push(`✅ 已保存到文件夹：${savedFolderName} (+4分)`);
+      } else {
+        details.push(`❌ 未完成文件夹保存（请点击"选择文件夹并保存"）`);
+      }
+
+      const totalScore = expected.fullScore;
+      rarStatusText.innerHTML = `📊 压缩题得分：<strong>${score} / ${totalScore}</strong><br>${details.join('<br>')}`;
+      rarStatus.style.borderLeftColor = score === totalScore ? 'var(--accent-green)' : (score >= 9 ? 'var(--accent-yellow)' : 'var(--accent-red)');
+      rarStatus.querySelector('i').className = score === totalScore ? 'fas fa-check-circle' : 'fas fa-info-circle';
+
+      window.rarScore = score;
+      window.rarAnswered = true;
+    });
+
+    // ============================================================
+    // 登录 + 密码强度
+    // ============================================================
+    const passwordInput = document.getElementById('password');
+    const seg1 = document.getElementById('seg1'), seg2 = document.getElementById('seg2'), seg3 = document.getElementById('seg3'), seg4 = document.getElementById('seg4');
+    const strengthLabel = document.getElementById('strengthLabel');
+    const loginMsgText = document.getElementById('loginMsgText');
+    const loginMessage = document.getElementById('loginMessage');
+    const usernameInput = document.getElementById('username');
+    const loginBtn = document.getElementById('loginBtn');
+
+    function checkPasswordRequirements(pwd) {
+      return {
+        length: pwd.length >= 8,
+        upper: /[A-Z]/.test(pwd),
+        lower: /[a-z]/.test(pwd),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(pwd)
+      };
+    }
+
+    function isStrongPassword(pwd) {
+      const req = checkPasswordRequirements(pwd);
+      return req.length && req.upper && req.lower && req.special;
+    }
+
+    function evaluatePasswordStrength(pwd) {
+      if (!pwd) return { score: 0, label: '无密码', level: 'weak', req: null };
+      const req = checkPasswordRequirements(pwd);
+      let score = 0;
+      if (req.length) score++;
+      if (req.upper) score++;
+      if (req.lower) score++;
+      if (req.special) score++;
+      let level = 'weak', label = '弱';
+      if (score === 4) { level = 'strong'; label = '强'; }
+      else if (score >= 2) { level = 'medium'; label = '中'; }
+      else { level = 'weak'; label = '弱'; }
+      return { score, label, level, req };
+    }
+
+    function updatePwdRequirements(pwd) {
+      const req = checkPasswordRequirements(pwd);
+      const elLength = document.getElementById('reqLength');
+      const elUpper = document.getElementById('reqUpper');
+      const elLower = document.getElementById('reqLower');
+      const elSpecial = document.getElementById('reqSpecial');
+      function setReq(el, ok) {
+        if (!el) return;
+        el.className = ok ? 'req-ok' : 'req-fail';
+        const icon = el.querySelector('i');
+        if (icon) icon.className = ok ? 'fas fa-check-circle' : 'fas fa-times-circle';
+      }
+      setReq(elLength, req.length);
+      setReq(elUpper, req.upper);
+      setReq(elLower, req.lower);
+      setReq(elSpecial, req.special);
+    }
+
+    function updateStrengthMeter(pwd) {
+      const result = evaluatePasswordStrength(pwd);
+      const segments = [seg1, seg2, seg3, seg4];
+      const req = result.req || { length: false, upper: false, lower: false, special: false };
+      const reqArray = [req.length, req.upper, req.lower, req.special];
+      for (let i = 0; i < segments.length; i++) {
+        if (reqArray[i]) {
+          segments[i].style.background = result.level === 'strong' ? 'var(--accent-green)' : 
+                                         (result.level === 'medium' ? 'var(--accent-yellow)' : 'var(--accent-red)');
+        } else {
+          segments[i].style.background = 'var(--border-main)';
+        }
+      }
+      strengthLabel.textContent = pwd.length === 0 ? '无密码' : result.label;
+      return result;
+    }
+
+    passwordInput.addEventListener('input', function() { 
+      const pwd = this.value;
+      const res = updateStrengthMeter(pwd); 
+      updatePwdRequirements(pwd);
+      if (pwd.length === 0) {
+        loginMsgText.innerHTML = '请输入密码';
+        loginMessage.style.borderLeftColor = 'var(--accent-blue)';
+      } else if (isStrongPassword(pwd)) {
+        loginMsgText.innerHTML = `✅ 强密码！符合全部要求 (8位+大小写+特殊符号)`;
+        loginMessage.style.borderLeftColor = 'var(--accent-green)';
+      } else {
+        const req = checkPasswordRequirements(pwd);
+        let missing = [];
+        if (!req.length) missing.push('8位以上');
+        if (!req.upper) missing.push('大写字母');
+        if (!req.lower) missing.push('小写字母');
+        if (!req.special) missing.push('特殊符号');
+        loginMsgText.innerHTML = `当前强度：<strong>${res.label}</strong> (${res.score}/4) 还需：${missing.join('、')}`;
+        loginMessage.style.borderLeftColor = res.level === 'medium' ? 'var(--accent-yellow)' : 'var(--accent-red)';
+      }
+    });
+
+    loginBtn.addEventListener('click', function() {
+      const account = usernameInput.value.trim();
+      const pwd = passwordInput.value;
+      let msg, icon = 'fa-info-circle', color = 'var(--accent-blue)';
+      const num = Number(account);
+      const isValidAcc = !isNaN(num) && Number.isInteger(num) && num >= examData.accountMin && num <= examData.accountMax;
+
+      if (!account) { 
+        msg = `⚠️ 请填写准考证号 (${examData.accountMin}~${examData.accountMax})`; 
+        icon = 'fa-exclamation-triangle'; color = 'var(--accent-yellow)'; 
+      } else if (!isValidAcc) { 
+        msg = `❌ 准考证号无效！仅支持 ${examData.accountMin} ~ ${examData.accountMax}`; 
+        icon = 'fa-times-circle'; color = 'var(--accent-red)'; 
+      } else if (pwd.length === 0) { 
+        msg = '⛔ 密码不能为空'; 
+        icon = 'fa-times-circle'; color = 'var(--accent-red)'; 
+      } else if (!isStrongPassword(pwd)) {
+        const req = checkPasswordRequirements(pwd);
+        let missing = [];
+        if (!req.length) missing.push('8位以上');
+        if (!req.upper) missing.push('大写字母');
+        if (!req.lower) missing.push('小写字母');
+        if (!req.special) missing.push('特殊符号（英文输入法）');
+        msg = `❌ 密码不符合要求！还需包含：${missing.join('、')}`;
+        icon = 'fa-exclamation-circle'; color = 'var(--accent-red)';
+      } else {
+        msg = `✅ 登录成功！欢迎 <strong>${account}</strong>，密码强度：强`;
+        icon = 'fa-check-circle'; color = 'var(--accent-green)';
+        alert(`✅ 模拟登录成功！\n准考证号：${account}\n密码强度：强 (符合全部要求)`);
+      }
+      loginMsgText.innerHTML = msg;
+      loginMessage.style.borderLeftColor = color;
+      loginMessage.querySelector('i').className = `fas ${icon}`;
+    });
+
+    // ============================================================
+    // 邮件发送
+    // ============================================================
+    const recipientInput = document.getElementById('recipient');
+    const subjectInput = document.getElementById('subject');
+    const emailBody = document.getElementById('emailBody');
+    const sendBtn = document.getElementById('sendEmailBtn');
+    const emailStatusText = document.getElementById('emailStatusText');
+    const emailStatusDiv = document.getElementById('emailStatus');
+
+    function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+    sendBtn.addEventListener('click', function() {
+      const recipient = recipientInput.value.trim();
+      const subject = subjectInput.value.trim() || '(无主题)';
+      const body = emailBody.value.trim() || '(无内容)';
+      emailStatusDiv.style.borderLeftColor = 'var(--accent-green)';
+      if (!recipient) { emailStatusText.innerHTML = '❌ 请填写收件人'; emailStatusDiv.style.borderLeftColor = 'var(--accent-red)'; emailStatusDiv.querySelector('i').className = 'fas fa-exclamation-circle'; return; }
+      if (!validateEmail(recipient)) { emailStatusText.innerHTML = '❌ 邮箱格式不正确'; emailStatusDiv.style.borderLeftColor = 'var(--accent-red)'; emailStatusDiv.querySelector('i').className = 'fas fa-exclamation-triangle'; return; }
+      if (body.length === 0) { emailStatusText.innerHTML = '⚠️ 邮件内容为空'; emailStatusDiv.style.borderLeftColor = 'var(--accent-yellow)'; emailStatusDiv.querySelector('i').className = 'fas fa-exclamation-circle'; return; }
+      emailStatusText.innerHTML = '📨 发送中 ...';
+      sendBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> 发送中';
+      sendBtn.disabled = true;
+      setTimeout(() => {
+        emailStatusText.innerHTML = `✅ 已发送至 ${recipient}`;
+        emailStatusDiv.querySelector('i').className = 'fas fa-check-circle';
+        emailStatusDiv.style.borderLeftColor = 'var(--accent-green)';
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 发送邮件';
+        sendBtn.disabled = false;
+        alert(`✅ 邮件模拟发送成功！\n收件人：${recipient}\n主题：${subject}`);
+      }, 1200);
+    });
+
+    // ============================================================
+    // 交卷
+    // ============================================================
+    const submitBtn = document.getElementById('submitExamBtn');
+    const submitMsgText = document.getElementById('submitMsgText');
+    const submitMessage = document.getElementById('submitMessage');
+
+    submitBtn.addEventListener('click', function() {
+      const totalChoice = examData.choiceQuestions.length;
+      const totalJudge = examData.judgeQuestions.length;
+
+      let choiceAnswered = 0, choiceScore = 0;
+      examData.choiceQuestions.forEach(q => {
+        const sel = document.querySelector(`input[name="${q.id}"]:checked`);
+        if (sel) { choiceAnswered++; if (sel.value === q.answer) choiceScore += 2; }
+      });
+
+      let judgeAnswered = 0, judgeScore = 0;
+      examData.judgeQuestions.forEach(q => {
+        const sel = document.querySelector(`input[name="${q.id}"]:checked`);
+        if (sel) { judgeAnswered++; if (sel.value === q.answer) judgeScore += 1; }
+      });
+
+      const opText = document.getElementById('opAnswer')?.value.trim() || '';
+      let opScore = 0;
+      const opKeywords = examData.operation.keywords;
+      if (opKeywords.length > 0) {
+        let matched = 0;
+        opKeywords.forEach(kw => { if (opText.toLowerCase().includes(kw.toLowerCase())) matched++; });
+        if (matched === opKeywords.length) opScore = examData.operation.fullScore;
+        else if (matched > 0) opScore = Math.round(examData.operation.fullScore * (matched / opKeywords.length));
+      } else if (opText.length > 0) opScore = examData.operation.fullScore;
+      const opAnswered = opText.length > 0 ? 1 : 0;
+
+      const htmlCode = document.getElementById('htmlCodeInput')?.value.trim() || '';
+      let htmlScore = 0;
+      if (htmlCode.toLowerCase().includes('<h2') || htmlCode.toLowerCase().includes('</h2>')) htmlScore += 5;
+      if (htmlCode.toLowerCase().includes('<img')) {
+        htmlScore += 5;
+        if (htmlCode.toLowerCase().includes('src=')) htmlScore += 3;
+        if (htmlCode.toLowerCase().includes('alt=')) htmlScore += 2;
+      }
+      htmlScore = Math.min(htmlScore, examData.htmlOperation.fullScore);
+      const htmlAnswered = htmlCode.length > 0 ? 1 : 0;
+
+      const rarAnswered = window.rarAnswered ? 1 : 0;
+      const rarFinalScore = window.rarScore || 0;
+
+      const totalAnswered = choiceAnswered + judgeAnswered + opAnswered + htmlAnswered + rarAnswered;
+      const totalQuestions = totalChoice + totalJudge + 3;
+      const totalScore = choiceScore + judgeScore + opScore + htmlScore + rarFinalScore;
+      const maxScore = totalChoice * 2 + totalJudge * 1 + examData.operation.fullScore + examData.htmlOperation.fullScore + examData.rarOperation.fullScore;
+
+      if (totalAnswered < totalQuestions) {
+        submitMsgText.innerHTML = `⚠️ 您还有 ${totalQuestions - totalAnswered} 道题未作答或未提交评分，请完成后交卷。`;
+        submitMessage.style.borderLeftColor = 'var(--accent-yellow)';
+        submitMessage.querySelector('i').className = 'fas fa-exclamation-circle';
+        return;
+      }
+
+      submitMsgText.innerHTML = `✅ 交卷成功！得分：${totalScore} / ${maxScore}`;
+      submitMessage.style.borderLeftColor = 'var(--accent-green)';
+      submitMessage.querySelector('i').className = 'fas fa-check-circle';
+
+      alert(`📊 考试交卷完成！\n总得分：${totalScore} / ${maxScore}\n\n各部分得分：\n单选：${choiceScore}/${totalChoice*2}\n判断：${judgeScore}/${totalJudge}\nWPS操作：${opScore}/${examData.operation.fullScore}\nHTML操作：${htmlScore}/${examData.htmlOperation.fullScore}\n压缩操作：${rarFinalScore}/${examData.rarOperation.fullScore}`);
+    });
+
+    // ============================================================
+    // 教师编辑面板
+    // ============================================================
+    const teacherPanel = document.getElementById('teacherPanel');
+    const teacherPanelBtn = document.getElementById('teacherPanelBtn');
+    const teacherModal = document.getElementById('teacherModal');
+    const teacherPasswordInput = document.getElementById('teacherPasswordInput');
+    const teacherConfirmBtn = document.getElementById('teacherConfirmBtn');
+    const teacherCancelBtn = document.getElementById('teacherCancelBtn');
+    const lockTeacherBtn = document.getElementById('lockTeacherBtn');
+
+    teacherPanelBtn.addEventListener('click', function() {
+      if (teacherPanel.classList.contains('visible')) {
+        teacherPanel.classList.toggle('visible');
+        return;
+      }
+      teacherModal.classList.remove('hidden-modal');
+      teacherPasswordInput.value = '';
+      teacherPasswordInput.focus();
+    });
+
+    teacherConfirmBtn.addEventListener('click', function() {
+      const pwd = teacherPasswordInput.value.trim();
+      if (pwd === TEACHER_PASSWORD) {
+        teacherModal.classList.add('hidden-modal');
+        teacherPanel.classList.add('visible');
+        teacherPanelBtn.innerHTML = '<i class="fas fa-unlock"></i> 教师编辑区';
+        setTimeout(() => teacherPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      } else {
+        alert('❌ 密码错误！请重新输入。');
+        teacherPasswordInput.value = '';
+        teacherPasswordInput.focus();
+      }
+    });
+
+    teacherCancelBtn.addEventListener('click', function() {
+      teacherModal.classList.add('hidden-modal');
+    });
+
+    teacherPasswordInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') teacherConfirmBtn.click();
+    });
+
+    lockTeacherBtn.addEventListener('click', function() {
+      teacherPanel.classList.remove('visible');
+      teacherPanelBtn.innerHTML = '<i class="fas fa-lock"></i> 教师编辑区';
+      teacherModal.classList.add('hidden-modal');
+    });
+
+    function renderEditor() {
+      document.getElementById('accMin').value = examData.accountMin;
+      document.getElementById('accMax').value = examData.accountMax;
+      updateAccRangeDisplay();
+
+      const rarEditor = document.getElementById('rarEditor');
+      rarEditor.innerHTML = `
+        <div class="editor-box">
+          <label>期望密码</label>
+          <input type="text" data-field="rarPwd" value="${examData.rarOperation.expectedPwd}">
+          <label style="margin-top:6px;">期望格式</label>
+          <input type="text" data-field="rarFormat" value="${examData.rarOperation.expectedFormat}">
+          <label style="margin-top:6px;">最少文件数</label>
+          <input type="number" data-field="rarMin" value="${examData.rarOperation.minFiles}">
+          <label style="margin-top:6px;">最多文件数</label>
+          <input type="number" data-field="rarMax" value="${examData.rarOperation.maxFiles}">
+          <label style="margin-top:6px;">满分</label>
+          <input type="number" data-field="rarScore" value="${examData.rarOperation.fullScore}">
+        </div>
+      `;
+    }
+
+    function updateAccRangeDisplay() {
+      const min = parseInt(document.getElementById('accMin').value) || 0;
+      const max = parseInt(document.getElementById('accMax').value) || 0;
+      document.getElementById('accRangeDisplay').textContent = `${min}~${max}`;
+      document.getElementById('accCountDisplay').textContent = Math.max(0, max - min + 1);
+    }
+
+    document.getElementById('accMin').addEventListener('input', updateAccRangeDisplay);
+    document.getElementById('accMax').addEventListener('input', updateAccRangeDisplay);
+
+    document.getElementById('saveEditsBtn').addEventListener('click', function() {
+      const newMin = parseInt(document.getElementById('accMin').value);
+      const newMax = parseInt(document.getElementById('accMax').value);
+      if (isNaN(newMin) || isNaN(newMax) || newMin > newMax) {
+        alert('❌ 账号范围无效'); return;
+      }
+      examData.accountMin = newMin;
+      examData.accountMax = newMax;
+
+      const rarPwdEl = document.querySelector('#rarEditor input[data-field="rarPwd"]');
+      const rarFormatEl = document.querySelector('#rarEditor input[data-field="rarFormat"]');
+      const rarMinEl = document.querySelector('#rarEditor input[data-field="rarMin"]');
+      const rarMaxEl = document.querySelector('#rarEditor input[data-field="rarMax"]');
+      const rarScoreEl = document.querySelector('#rarEditor input[data-field="rarScore"]');
+      if (rarPwdEl) examData.rarOperation.expectedPwd = rarPwdEl.value;
+      if (rarFormatEl) examData.rarOperation.expectedFormat = rarFormatEl.value;
+      if (rarMinEl) examData.rarOperation.minFiles = parseInt(rarMinEl.value) || 1;
+      if (rarMaxEl) examData.rarOperation.maxFiles = parseInt(rarMaxEl.value) || 5;
+      if (rarScoreEl) examData.rarOperation.fullScore = parseInt(rarScoreEl.value) || 15;
+
+      localStorage.setItem('sjz_exam_data_v7', JSON.stringify(examData));
+      alert('✅ 题目已更新并保存！');
+    });
+
+    renderEditor();
+
+    // 初始化
+    window.addEventListener('DOMContentLoaded', function() {
+      updateStrengthMeter(passwordInput.value);
+      updatePwdRequirements(passwordInput.value);
+      loginMsgText.innerHTML = `请输入准考证号(${examData.accountMin}-${examData.accountMax})和密码`;
+      emailStatusText.innerHTML = '就绪，填写收件人后发送';
+      submitMsgText.innerHTML = '完成所有题目后点击交卷';
+      refreshHtmlPreview();
+      renderFileList();
+    });
+
+  })();
+</script>
+</body>
+</html>
