@@ -22,6 +22,7 @@
       --bg-msg: #1e293b;
       --bg-code: #0a0e17;
       --bg-code-input: #000000;
+      --bg-github: #161b22;
 
       --text-primary: #f1f5f9;
       --text-secondary: #cbd5e1;
@@ -73,6 +74,7 @@
       --bg-msg: #eef5fb;
       --bg-code: #1e1e2e;
       --bg-code-input: #181825;
+      --bg-github: #f6f8fa;
 
       --text-primary: #0b2b4a;
       --text-secondary: #1f3f62;
@@ -165,7 +167,6 @@
     }
     .theme-toggle-btn:hover { transform: scale(0.96); opacity: 0.85; }
 
-    /* 年级选择器 - 四学期 */
     .grade-selector {
       display: flex;
       align-items: center;
@@ -384,6 +385,120 @@
     .footer-note i { margin-right: 6px; color: var(--accent-blue); }
     .footer-author { margin-top: 12px; text-align: center; font-size: 0.8rem; color: var(--accent-blue); font-weight: 500; letter-spacing: 0.5px; }
     .footer-author i { margin-right: 6px; }
+
+    /* ===== GitHub 宣传卡片 ===== */
+    .github-promo {
+      margin-top: 20px;
+      background: var(--bg-github);
+      border-radius: 24px;
+      padding: 22px 26px;
+      border: 1px solid var(--border-main);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .github-promo::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6, #3b82f6);
+      background-size: 300% 100%;
+      animation: githubGradient 4s ease infinite;
+    }
+    @keyframes githubGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .github-promo:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      border-color: var(--accent-purple);
+    }
+    .github-promo .gh-icon {
+      font-size: 3rem;
+      color: var(--text-primary);
+      line-height: 1;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+    .github-promo:hover .gh-icon {
+      transform: rotate(-10deg) scale(1.1);
+    }
+    .github-promo .gh-content {
+      flex: 1;
+      min-width: 200px;
+    }
+    .github-promo .gh-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .github-promo .gh-title .gh-badge {
+      font-size: 0.7rem;
+      background: linear-gradient(135deg, #f59e0b, #ec4899);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .github-promo .gh-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .github-promo .gh-star {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1f2937;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 60px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      box-shadow: 0 6px 16px rgba(245,158,11,0.4);
+      border: none;
+      cursor: pointer;
+    }
+    .github-promo .gh-star:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 22px rgba(245,158,11,0.6);
+    }
+    .github-promo .gh-star i {
+      animation: starPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+    }
+    .github-promo .gh-arrow {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-left: 4px;
+    }
+    @media (max-width: 600px) {
+      .github-promo {
+        flex-direction: column;
+        text-align: center;
+      }
+      .github-promo .gh-title {
+        justify-content: center;
+      }
+    }
 
     .strength-meter { display:flex; gap:8px; align-items:center; margin-top:4px; }
     .meter-bar { flex:1; height:8px; background: var(--border-main); border-radius:20px; overflow:hidden; display:flex; }
@@ -717,11 +832,35 @@
     </div>
   </div>
 
+  <!-- ===== 底部 ===== -->
   <div class="footer-note">
     <span><i class="fas fa-database"></i> 石家庄市考试院 模拟</span>
   </div>
   <div class="footer-author">
     <i class="fas fa-user-graduate"></i> 该网页由初二4班赵梓鑫创建
+  </div>
+
+  <!-- ===== GitHub 宣传卡片 ===== -->
+  <div class="github-promo">
+    <div class="gh-icon"><i class="fab fa-github"></i></div>
+    <div class="gh-content">
+      <div class="gh-title">
+        <i class="fas fa-star" style="color: #fbbf24;"></i>
+        我的 GitHub 项目
+        <span class="gh-badge">求 star ✨</span>
+      </div>
+      <div class="gh-desc">
+        如果这个项目对你有帮助，欢迎来我的 GitHub 逛逛，点个 Star 支持一下～
+        <br>
+        <a href="https://github.com/moring-2026" target="_blank" style="color: var(--accent-blue); text-decoration: none; word-break: break-all;">
+          <i class="fas fa-link"></i> https://github.com/moring-2026
+        </a>
+      </div>
+      <a class="gh-star" href="https://github.com/moring-2026" target="_blank" rel="noopener">
+        <i class="fas fa-star"></i> 请作者吃 star
+        <i class="fas fa-arrow-right gh-arrow"></i>
+      </a>
+    </div>
   </div>
 </div>
 </div>
@@ -907,7 +1046,6 @@
     // ============================================================
     let currentGrade = 0;
 
-    // 学期信息映射
     const GRADE_INFO = {
       0: { name: '初一上学期', tagClass: 'grade-0', choiceKey: 'choiceQuestions0', judgeKey: 'judgeQuestions0' },
       1: { name: '初一下学期', tagClass: 'grade-1', choiceKey: 'choiceQuestions1', judgeKey: 'judgeQuestions1' },
